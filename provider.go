@@ -26,7 +26,7 @@ type Provider interface {
 }
 
 type Claims interface {
-	Claims() *User
+	MarshalToUser() *User
 }
 
 type AuthCode struct {
@@ -228,5 +228,5 @@ func (p *provider[T]) GetUserData(ctx context.Context, token *Token) (*User, err
 	if err := p.makeRequest(ctx, token.Token, p.apiURL, user); err != nil {
 		return nil, err
 	}
-	return user.Claims(), nil
+	return user.MarshalToUser(), nil
 }

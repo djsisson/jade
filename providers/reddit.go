@@ -16,7 +16,7 @@ type RedditUser struct {
 	ID    string `json:"id,omitempty"`
 }
 
-func (r *RedditUser) Claims() *jade.User {
+func (r *RedditUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            r.ID,
 		Issuer:        "reddit",

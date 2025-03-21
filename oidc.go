@@ -97,7 +97,7 @@ func (p *oidcProvider[T]) userInfo(ctx context.Context, token *oauth2.Token) (u 
 	if err != nil {
 		return
 	}
-	return v.Claims(), nil
+	return v.MarshalToUser(), nil
 }
 
 // parseIDToken extracts and verifies the ID token from the given OAuth2 token.
@@ -132,7 +132,7 @@ func (p *oidcProvider[T]) parseClaims(token *oidc.IDToken) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	return v.Claims(), nil
+	return v.MarshalToUser(), nil
 }
 
 // GetUserData returns the user data associated with the given token.

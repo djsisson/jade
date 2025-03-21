@@ -19,7 +19,7 @@ type KeycloakUser struct {
 	Picture   string `json:"picture,omitempty"`
 }
 
-func (k *KeycloakUser) Claims() *jade.User {
+func (k *KeycloakUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:        k.ID,
 		Issuer:    "keycloak",

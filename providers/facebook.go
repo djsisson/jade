@@ -19,7 +19,7 @@ type FacebookUser struct {
 	LastName  string `json:"family_name,omitempty"`
 }
 
-func (f *FacebookUser) Claims() *jade.User {
+func (f *FacebookUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:        f.ID,
 		Issuer:    "facebook",

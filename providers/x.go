@@ -19,7 +19,7 @@ type XUser struct {
 	Username string `json:"username"`
 }
 
-func (x *XUser) Claims() *jade.User {
+func (x *XUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            x.Id,
 		Issuer:        "x",

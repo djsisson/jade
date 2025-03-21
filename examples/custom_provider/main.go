@@ -37,7 +37,7 @@ type CustomClaims struct {
 	HostedDomain  string `json:"hd,omitempty"`
 }
 
-func (u *CustomClaims) Claims() *jade.User {
+func (u *CustomClaims) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            u.ID,
 		Name:          u.Name,

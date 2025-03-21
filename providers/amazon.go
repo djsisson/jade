@@ -19,7 +19,7 @@ type AmazonUser struct {
 	Name  string `json:"name,omitempty"`
 }
 
-func (au *AmazonUser) Claims() *jade.User {
+func (au *AmazonUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            fmt.Sprintf("%d", au.ID),
 		Issuer:        "amazon",

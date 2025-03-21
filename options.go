@@ -13,6 +13,7 @@ type ProviderOptions struct {
 	AuthOptions []oauth2.AuthCodeOption
 	ApiURL      string
 	UsePKCE     bool
+	Claims      Claims
 }
 
 type Options struct {

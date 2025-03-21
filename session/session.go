@@ -210,11 +210,17 @@ func (st *jadeStore) BeginAuth(r *http.Request, w http.ResponseWriter, provider,
 // Any errors encountered during this process are returned as an error.
 func (st *jadeStore) CompleteAuth(r *http.Request, w http.ResponseWriter) error {
 
-	redir := r.FormValue("redirected")
-	if redir != "true" {
-		// make sure we have redirected from the user inorder to read the session cookie
-		completeAuthRedirect(r, w)
-		return nil
+	sess, err := st.getSession(r)
+	if err != nil {
+		// if we are here then we can't read the cookie (due to samesite strict, so we need to force a refresh to same location.)
+		redir := r.FormValue("redirected")
+		if redir != "true" {
+			// make sure we only redirect once by adding redirected param
+			completeAuthRedirect(r, w)
+			return nil
+		}
+		// if we are here, then there is no cookie set and need to abort the request
+		return err
 	}
 
 	code := r.FormValue("code")
@@ -224,11 +230,6 @@ func (st *jadeStore) CompleteAuth(r *http.Request, w http.ResponseWriter) error 
 	}
 
 	claims, err := st.verifyJWT(state)
-	if err != nil {
-		return err
-	}
-
-	sess, err := st.getSessionWithId(r)
 	if err != nil {
 		return err
 	}
@@ -299,10 +300,17 @@ func (st *jadeStore) CompleteAuth(r *http.Request, w http.ResponseWriter) error 
 // If the refresh token is valid, it uses the new access token to fetch the user data and stores it in the session.
 func (st *jadeStore) GetUserData(r *http.Request, w http.ResponseWriter) (u *jade.User, err error) {
 
-	session, err := st.getSessionWithId(r)
+	session, err := st.getSession(r)
+
 	if err != nil {
-		return
+		return nil, err
 	}
+
+	defer func() {
+		if session.IsNew {
+			st.st.Save(r, w, session)
+		}
+	}()
 
 	token, ok := session.Values["token"].(jade.Token)
 	if !ok {
@@ -320,12 +328,6 @@ func (st *jadeStore) GetUserData(r *http.Request, w http.ResponseWriter) (u *jad
 	if err != nil {
 		return
 	}
-
-	defer func() {
-		if session.IsNew {
-			st.st.Save(r, w, session)
-		}
-	}()
 
 	accessToken := token.AccessToken
 
@@ -357,28 +359,43 @@ func (st *jadeStore) GetUserData(r *http.Request, w http.ResponseWriter) (u *jad
 // GetAccessToken returns the access token associated with the current session.
 // If the session does not contain a valid access token, it returns an error.
 func (st *jadeStore) GetAccessToken(r *http.Request) (string, error) {
-	session, err := st.getSessionWithId(r)
+	session, err := st.getSession(r)
 	if err != nil {
 		return "", err
 	}
 	token, ok := session.Values["token"].(jade.Token)
-	if !ok || !token.Valid() {
+	if !ok {
 		return "", fmt.Errorf("no token in session")
 	}
+	if !token.Valid() {
+		return "", fmt.Errorf("token is not valid")
+	}
 	return token.AccessToken, nil
+}
+
+// getSession retrieves a session from the store using the given request.
+// If the session is not found or does not contain an ID, it returns an error.
+// Otherwise, it sets the session ID and IsNew properties and returns the session.
+func (st *jadeStore) getSession(r *http.Request) (*sessions.Session, error) {
+	session, err := st.st.Get(r, st.cookieName)
+	if err != nil {
+		return nil, err
+	}
+	id, ok := session.Values["id"].(string)
+	if !ok || id == "" {
+		return nil, fmt.Errorf("no id in session")
+	}
+	session.IsNew = false
+	session.ID = id
+	return session, nil
 }
 
 // getSessionWithId returns a session with the ID from the session store, or
 // generates a new session with a new ID and saves it to the session store.
 func (st *jadeStore) getSessionWithId(r *http.Request) (*sessions.Session, error) {
-	session, err := st.st.Get(r, st.cookieName)
-	if err != nil {
-		return nil, err
-	}
+	session, err := st.getSession(r)
 
-	if sessionID, exists := session.Values["id"].(string); exists && sessionID != "" {
-		session.IsNew = false
-		session.ID = sessionID
+	if err == nil {
 		return session, nil
 	}
 
@@ -433,6 +450,7 @@ func (st *jadeStore) verifyJWT(tokenString string) (*claims, error) {
 
 	return nil, fmt.Errorf("invalid token")
 }
+
 // hashSessionId generates a SHA-256 hash of the provided session ID string.
 //
 // The function creates a new SHA-256 hasher, writes the session ID to it,

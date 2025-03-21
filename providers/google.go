@@ -25,7 +25,7 @@ type GoogleUser struct {
 	HostedDomain  string `json:"hd,omitempty"`
 }
 
-func (u *GoogleUser) Claims() *jade.User {
+func (u *GoogleUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            u.ID,
 		Issuer:        "google",

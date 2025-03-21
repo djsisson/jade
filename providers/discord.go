@@ -21,7 +21,7 @@ type DiscordUser struct {
 	Locale    string `json:"locale,omitempty"`
 }
 
-func (d *DiscordUser) Claims() *jade.User {
+func (d *DiscordUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            d.ID,
 		Issuer:        "discord",

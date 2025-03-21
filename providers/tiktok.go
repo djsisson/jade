@@ -17,7 +17,7 @@ type TikTokUser struct {
 	Name     string `json:"display_name"`
 }
 
-func (t *TikTokUser) Claims() *jade.User {
+func (t *TikTokUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:       t.ID,
 		Issuer:   "tiktok",

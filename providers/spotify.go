@@ -24,7 +24,7 @@ type spotifyUserImage struct {
 	Width  int    `json:"width"`
 }
 
-func (s *SpotifyUser) Claims() *jade.User {
+func (s *SpotifyUser) MarshalToUser() *jade.User {
 	u := &jade.User{
 		ID:            s.ID,
 		Name:          s.DisplayName,

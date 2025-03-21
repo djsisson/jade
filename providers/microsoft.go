@@ -17,7 +17,7 @@ type MicrosoftUser struct {
 	UserName string `json:"preferred_username"`
 }
 
-func (m *MicrosoftUser) Claims() *jade.User {
+func (m *MicrosoftUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:       m.ID,
 		Issuer:   "microsoft",

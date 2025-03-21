@@ -22,7 +22,7 @@ type appleUser struct {
 	ID            string    `json:"sub,omitempty"`
 }
 
-func (u *appleUser) Claims() *jade.User {
+func (u *appleUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            u.ID,
 		Issuer:        "apple",

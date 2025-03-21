@@ -18,7 +18,7 @@ type TwitchUser struct {
 	Verified bool   `json:"email_verified,omitempty"`
 }
 
-func (t *TwitchUser) Claims() *jade.User {
+func (t *TwitchUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            t.ID,
 		Issuer:        "twitch",

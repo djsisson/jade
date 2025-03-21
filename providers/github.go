@@ -21,7 +21,7 @@ type GithubUser struct {
 	AvatarURL string `json:"avatar_url,omitempty"`
 }
 
-func (g *GithubUser) Claims() *jade.User {
+func (g *GithubUser) MarshalToUser() *jade.User {
 	return &jade.User{
 		ID:            fmt.Sprintf("%d", g.ID),
 		Issuer:        "github",
