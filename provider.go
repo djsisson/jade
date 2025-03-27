@@ -77,6 +77,17 @@ func ClearProviders() {
 	providers = Providers{}
 }
 
+// RemoveProvider removes the provider with the given name from the global providers map.
+// If no provider with the specified name exists, the function does nothing.
+// This function is safe for concurrent use by multiple goroutines.
+
+func RemoveProvider(name string) {
+	mu.Lock()
+	defer mu.Unlock()
+
+	delete(providers, name)
+}
+
 type provider[T Claims] struct {
 	*oauth2.Config
 	name        string
