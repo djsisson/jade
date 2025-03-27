@@ -27,9 +27,11 @@ func (r *RedditUser) MarshalToUser() *jade.User {
 }
 
 func NewRedditProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "reddit"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "reddit",
 		AuthOptions: opts,
 		EndPoint: oauth2.Endpoint{
 			AuthURL:  "https://ssl.reddit.com/api/v1/authorize",

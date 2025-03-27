@@ -14,7 +14,6 @@ type oidcProvider[T Claims] struct {
 }
 type OIDCOptions struct {
 	Options
-	Name        string
 	AuthOptions []oauth2.AuthCodeOption
 	Issuer      string
 	UseNonce    bool
@@ -43,7 +42,6 @@ func NewOIDCProvider[T Claims](opts *OIDCOptions) (*oidcProvider[T], error) {
 	}
 	options := &ProviderOptions{
 		Options:     opts.Options,
-		Name:        opts.Name,
 		AuthOptions: opts.AuthOptions,
 		EndPoint:    oidcP.Endpoint(),
 		UsePKCE:     opts.UsePKCE,

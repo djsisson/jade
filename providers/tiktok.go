@@ -28,9 +28,11 @@ func (t *TikTokUser) MarshalToUser() *jade.User {
 }
 
 func NewTikTokProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "tiktok"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "tiktok",
 		AuthOptions: opts,
 		EndPoint: oauth2.Endpoint{
 			AuthURL:  "https://www.tiktok.com/v2/auth/authorize",

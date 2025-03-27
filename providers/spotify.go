@@ -40,9 +40,11 @@ func (s *SpotifyUser) MarshalToUser() *jade.User {
 }
 
 func (s *SpotifyUser) NewSpotifyProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "spotify"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "spotify",
 		AuthOptions: opts,
 		EndPoint:    endpoints.Spotify,
 		ApiURL:      SpotifyApiUrl,

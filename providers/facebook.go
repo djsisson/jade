@@ -32,6 +32,9 @@ func (f *FacebookUser) MarshalToUser() *jade.User {
 }
 
 func NewFacebookProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "facebook"
+	}
 	if len(o.Scopes) == 0 {
 		o.Scopes = FacebookScopes
 	}
@@ -43,7 +46,6 @@ func NewFacebookProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.P
 
 	p, err := jade.NewOIDCProvider[*FacebookUser](&jade.OIDCOptions{
 		Options:     *o,
-		Name:        "facebook",
 		AuthOptions: opts,
 		Issuer:      FacebookIssuer,
 		UseNonce:    true,

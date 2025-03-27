@@ -36,6 +36,9 @@ func (u *appleUser) MarshalToUser() *jade.User {
 
 func NewAppleProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
 
+	if o.Name == "" {
+		o.Name = "apple"
+	}
 	if len(o.Scopes) == 0 {
 		o.Scopes = AppleScopes
 	}
@@ -47,7 +50,6 @@ func NewAppleProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Prov
 
 	p, err := jade.NewOIDCProvider[*appleUser](&jade.OIDCOptions{
 		Options:     *o,
-		Name:        "apple",
 		AuthOptions: opts,
 		Issuer:      AppleIssuer,
 	})

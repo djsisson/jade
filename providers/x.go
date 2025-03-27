@@ -32,9 +32,11 @@ func (x *XUser) MarshalToUser() *jade.User {
 }
 
 func NewXProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "x"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "x",
 		AuthOptions: opts,
 		EndPoint: oauth2.Endpoint{
 			AuthURL:  "https://x.com/i/oauth2/authorize",

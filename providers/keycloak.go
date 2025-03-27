@@ -34,6 +34,9 @@ func (k *KeycloakUser) MarshalToUser() *jade.User {
 
 func NewKeycloakProvider(BaseURL, Realm string, o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
 
+	if o.Name == "" {
+		o.Name = "keycloak"
+	}
 	if len(o.Scopes) == 0 {
 		o.Scopes = KeycloakScopes
 	}
@@ -45,7 +48,6 @@ func NewKeycloakProvider(BaseURL, Realm string, o *jade.Options, opts ...oauth2.
 
 	p, err := jade.NewOIDCProvider[*KeycloakUser](&jade.OIDCOptions{
 		Options:     *o,
-		Name:        "keycloak",
 		AuthOptions: opts,
 		Issuer:      BaseURL + "/realms/" + Realm,
 		UseNonce:    true,
@@ -55,5 +57,5 @@ func NewKeycloakProvider(BaseURL, Realm string, o *jade.Options, opts ...oauth2.
 	if err != nil {
 		return nil, err
 	}
-	return p, nil	
+	return p, nil
 }

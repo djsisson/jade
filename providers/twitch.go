@@ -30,6 +30,10 @@ func (t *TwitchUser) MarshalToUser() *jade.User {
 }
 
 func NewTwitchProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+
+	if o.Name == "" {
+		o.Name = "twitch"
+	}
 	if len(o.Scopes) == 0 {
 		o.Scopes = TwitchScopes
 	}
@@ -41,7 +45,6 @@ func NewTwitchProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Pro
 
 	p, err := jade.NewOIDCProvider[*TwitchUser](&jade.OIDCOptions{
 		Options:     *o,
-		Name:        "twitch",
 		AuthOptions: opts,
 		Issuer:      TwitchIssuer,
 		UseNonce:    true,

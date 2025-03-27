@@ -34,9 +34,11 @@ func (g *GithubUser) MarshalToUser() *jade.User {
 }
 
 func NewGithubProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "github"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "github",
 		AuthOptions: opts,
 		EndPoint:    endpoints.GitHub,
 		ApiURL:      GithubApiUrl,

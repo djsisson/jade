@@ -30,9 +30,11 @@ func (au *AmazonUser) MarshalToUser() *jade.User {
 }
 
 func NewAmazonProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "amazon"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "amazon",
 		AuthOptions: opts,
 		EndPoint:    endpoints.Amazon,
 		UsePKCE:     true,

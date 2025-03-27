@@ -35,9 +35,11 @@ func (d *DiscordUser) MarshalToUser() *jade.User {
 }
 
 func NewDiscordProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "discord"
+	}
 	options := &jade.ProviderOptions{
 		Options:     *o,
-		Name:        "discord",
 		AuthOptions: opts,
 		EndPoint:    endpoints.Discord,
 		ApiURL:      DiscordApiUrl,

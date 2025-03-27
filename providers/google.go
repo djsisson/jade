@@ -41,6 +41,9 @@ func (u *GoogleUser) MarshalToUser() *jade.User {
 
 func NewGoogleProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
 
+	if o.Name == "" {
+		o.Name = "google"
+	}
 	if len(o.Scopes) == 0 {
 		o.Scopes = GoogleScopes
 	}
@@ -53,7 +56,6 @@ func NewGoogleProvider(o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Pro
 
 	p, err := jade.NewOIDCProvider[*GoogleUser](&jade.OIDCOptions{
 		Options:     *o,
-		Name:        "google",
 		AuthOptions: opts,
 		Issuer:      GoogleIssuer,
 		UseNonce:    true,

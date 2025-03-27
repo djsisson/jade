@@ -8,7 +8,6 @@ import (
 
 type ProviderOptions struct {
 	Options
-	Name        string
 	EndPoint    oauth2.Endpoint
 	AuthOptions []oauth2.AuthCodeOption
 	ApiURL      string
@@ -17,6 +16,7 @@ type ProviderOptions struct {
 }
 
 type Options struct {
+	Name         string
 	ClientID     string
 	ClientSecret string
 	CallbackURL  string

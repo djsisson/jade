@@ -28,6 +28,9 @@ func (m *MicrosoftUser) MarshalToUser() *jade.User {
 }
 
 func NewMicrosoftProvider(Tenant string, o *jade.Options, opts ...oauth2.AuthCodeOption) (jade.Provider, error) {
+	if o.Name == "" {
+		o.Name = "microsoft"
+	}
 	if Tenant == "" {
 		Tenant = "common"
 	}
@@ -42,7 +45,6 @@ func NewMicrosoftProvider(Tenant string, o *jade.Options, opts ...oauth2.AuthCod
 
 	p, err := jade.NewOIDCProvider[*MicrosoftUser](&jade.OIDCOptions{
 		Options:     *o,
-		Name:        "microsoft",
 		AuthOptions: opts,
 		Issuer:      MicrosoftIssuer + "/" + Tenant + "/v2.0",
 		UseNonce:    true,
